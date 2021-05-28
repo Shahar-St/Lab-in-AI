@@ -53,7 +53,8 @@ class NSGA2(Algorithm):
         return best.getVec()
 
     def _mate(self):
-        tempPopulation = []
+        # get elite
+        tempPopulation = self._getElite()
         while len(tempPopulation) < self._popSize:
 
             # choose parents
@@ -131,8 +132,8 @@ class NSGA2(Algorithm):
                 sortedFront[-1].setDistance(sys.maxsize)
                 if sortedFront.size > 2:
                     for i in range(1, sortedFront.size - 1):
-                        disIncrease = (tempObjValues[i + 1] - tempObjValues[i - 1]) /\
-                                    max((tempObjValues.max() - tempObjValues.min()), 1)
+                        disIncrease = (tempObjValues[i + 1] - tempObjValues[i - 1]) / \
+                                      max((tempObjValues.max() - tempObjValues.min()), 1)
                         disIncrease += sortedFront[i].getDistance()
                         sortedFront[i].setDistance(disIncrease)
             citizensSeen += citizens.size
@@ -154,15 +155,15 @@ class NSGA2(Algorithm):
         return np.array(candidates)
 
     def getParents(self):
-        firstCandidate = self._citizens[random.randrange(self._citizens.size)]
-        secondCandidate = self._citizens[random.randrange(self._citizens.size)]
+        firstCandidate = self._citizens[random.randrange(self._citizens.size / 2)]
+        secondCandidate = self._citizens[random.randrange(self._citizens.size / 2)]
         if firstCandidate < secondCandidate:
             parent1 = firstCandidate
         else:
             parent1 = secondCandidate
 
-        firstCandidate = self._citizens[random.randrange(self._citizens.size)]
-        secondCandidate = self._citizens[random.randrange(self._citizens.size)]
+        firstCandidate = self._citizens[random.randrange(self._citizens.size / 2)]
+        secondCandidate = self._citizens[random.randrange(self._citizens.size / 2)]
         if firstCandidate < secondCandidate:
             parent2 = firstCandidate
         else:
