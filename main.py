@@ -3,6 +3,8 @@ import time
 
 from algorithms.Algorithm import Algorithm
 from problems.cvrp.CVRP import CVRP
+from problems.cvrp.GeneticCVRP import GeneticCVRP
+from problems.multiknapsack.MultiKnapsack import MultiKnapsack
 from util.Consts import *
 
 
@@ -21,7 +23,7 @@ def main():
     popSize = args.popSize
     target = args.target
 
-    problem = CVRP(target)
+    problem = GeneticCVRP(target)
 
     algo = Algorithm.factory(
         algoName=algoName,

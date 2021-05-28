@@ -19,7 +19,7 @@ class Algorithm(ABC):
 
         algo = getattr(module, algoName)
 
-        if algoName == 'GeneticAlgorithm':
+        if algoName == 'NSGA2':
             return algo(
                 problem=problem,
                 popSize=popSize

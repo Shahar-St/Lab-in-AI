@@ -15,7 +15,7 @@ class CVRP:
 
     def __init__(self, target):
         # read and parse input file
-        filePath = os.getcwd() + '\\util\\inputfiles\\' + str(target) + '.txt'
+        filePath = os.path.join(os.getcwd(), 'problems', 'cvrp', 'inputfiles', str(target) + '.txt')
         inputFile = open(filePath, 'r')
 
         coordinatesSection = 7
@@ -130,31 +130,19 @@ class CVRP:
 
         return minCity
 
-    def generateOneNeighbor(self, vec):
-        index1, index2 = getValidIndexes(len(vec))
-        neighbor = vec[:index1] + np.flip(vec[index1:index2]).tolist() + vec[index2:]
-        return neighbor
-
-    # gets a vec and return half of it's opt-2 neighbors (randomly)
-    def generateNeighbors(self, vec):
-
-        pairsList = list(itertools.combinations(range(self._dim - 1), 2))
-        random.shuffle(pairsList)
-        pairsList = pairsList[:int(len(pairsList) / 2)]
-        neighbors = []
-        for pair in pairsList:
-            neighbor = vec[:pair[0]] + np.flip(vec[pair[0]:pair[1]]).tolist() + vec[pair[1]:]
-
-            neighbors.append(neighbor)
-
-        return neighbors
 
     def getTargetSize(self):
         return self._dim - 1
 
-    @staticmethod
-    def factory(cvrpName, target):
-        module = importlib.import_module('problems.' + cvrpName)
-        cvrp = getattr(module, cvrpName)
+    def calculateObjFunctions(self, vec):
+        res = []
+        # distance
+        dis = self.calculateFitness(vec)
+        res.append(dis)
 
-        return cvrp(target)
+        # num of vehicles
+        vecWithStops = self.getVecWithStops(vec)
+        numOfVehicles = vecWithStops.count(0) - 1
+        res.append(numOfVehicles)
+
+        return res
