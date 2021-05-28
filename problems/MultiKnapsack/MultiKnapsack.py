@@ -8,18 +8,6 @@ from problems.Problem import Problem
 
 class MultiKnapsack(Problem):
 
-    def getTargetSize(self):
-        pass
-
-    def translateVec(self, vec):
-        pass
-
-    def generateRandomVec(self):
-        pass
-
-    def calculateFitness(self, newVec):
-        pass
-
     def __init__(self, target):
         super().__init__(target)
         # read and parse input file
@@ -71,3 +59,30 @@ class MultiKnapsack(Problem):
         self._numOfItems = numOfItems
         self._capacities = np.array(capacities)
         self._optimalVal = optimal
+
+    def isOptimal(self, results):
+        return results == self._optimalVal
+
+    def getNumOfItems(self):
+        return len(self._values)
+
+    def getWeights(self):
+        return self._capacities
+
+    def getValues(self):
+        return self._values
+
+    def getMatWeights(self):
+        return self._knapsackWeightsPerItem
+
+    def translateVec(self, vec):
+        return vec
+
+    def getTargetSize(self):
+        pass
+
+    def generateRandomVec(self):
+        pass
+
+    def calculateFitness(self, newVec):
+        pass

@@ -9,7 +9,7 @@ BEST = 0
 X = 0
 Y = 1
 
-DEFAULT_TARGET = 'FLEI.DAT'
+DEFAULT_TARGET = 'HP1.DAT'
 
 '''------------------GA-------------------'''
 GA_ELITE_RATE = 0.2  # elitism rate
