@@ -9,17 +9,18 @@ BEST = 0
 X = 0
 Y = 1
 
-DEFAULT_TARGET = '1'
+DEFAULT_TARGET = 'FLEI.DAT'
 
 '''------------------GA-------------------'''
 GA_ELITE_RATE = 0.2  # elitism rate
 GA_MUTATION_RATE = 0.4  # mutation rate
 
-
 '''------------------DEFAULT_PARSER-------------------'''
 
-DEFAULT_ALGORITHM = 'NSGA2'
+DEFAULT_ALGORITHM = 'LDS'
+DEFAULT_PROBLEM = 'MultiKnapsack'
 
 '''------------------ALLOWED_PARSER_NAMES-------------------'''
 
-ALLOWED_ALGO_NAMES = ('NSGA2')
+ALLOWED_ALGO_NAMES = ('NSGA2', 'LDS')
+ALLOWED_PROBLEM_NAMES = ('CVRP', 'MultiKnapsack')

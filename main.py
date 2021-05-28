@@ -2,9 +2,7 @@ import argparse
 import time
 
 from algorithms.Algorithm import Algorithm
-from problems.cvrp.CVRP import CVRP
-from problems.cvrp.GeneticCVRP import GeneticCVRP
-from problems.multiknapsack.MultiKnapsack import MultiKnapsack
+from problems.Problem import Problem
 from util.Consts import *
 
 
@@ -13,6 +11,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--algo', default=DEFAULT_ALGORITHM)
+    parser.add_argument('-p', '--problem', default=DEFAULT_PROBLEM)
     parser.add_argument('-ps', '--popSize', type=int, default=GA_POP_SIZE)
     parser.add_argument('-t', '--target', default=DEFAULT_TARGET)
 
@@ -22,8 +21,9 @@ def main():
     algoName = args.algo
     popSize = args.popSize
     target = args.target
+    problemName = args.problem
 
-    problem = GeneticCVRP(target)
+    problem = Problem.factory(problemName, target)
 
     algo = Algorithm.factory(
         algoName=algoName,
