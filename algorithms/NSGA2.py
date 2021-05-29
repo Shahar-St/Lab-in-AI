@@ -28,6 +28,10 @@ class NSGA2(Algorithm):
             [NSGA2Entity(self._problem.generateRandomVec()) for _ in range(self._popSize - 1)] +
             [NSGA2Entity(self._problem.generateGreedyVec())]
         )
+
+        if len(self._citizens[0].getVec()) == 1:
+            return self._citizens[0].getVec()
+
         # init the fitness of the citizens
         self.updateFitnessAndDistance()
         best = self._citizens[BEST]
@@ -45,8 +49,6 @@ class NSGA2(Algorithm):
 
             best = self._citizens[BEST]
             iterCounter += 1
-
-            # print(f'Best: {self._problem.calculateFitness(best.getVec())}')
 
         self._citizens = None
 

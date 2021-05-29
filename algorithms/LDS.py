@@ -13,12 +13,17 @@ class LDS(Algorithm):
 
         self._estimateFunc = estimateFunc
         self._numOfItems = self._problem.getNumOfItems()
+        self._withEarlyStopping = False
         self._maxIter = 0
 
     def findSolution(self, maxIter):
+        return self.run(maxIter)
+
+    def run(self, maxIter, withEarlyStopping=False):
         valuesSum = 0
         weights = self._problem.getWeights()
         self._maxIter = maxIter
+        self._withEarlyStopping = withEarlyStopping
 
         globalSol = 0
 
@@ -41,7 +46,7 @@ class LDS(Algorithm):
     def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec):
 
         self._maxIter -= 1
-        if depth == self._numOfItems or self._maxIter == 0:
+        if depth == self._numOfItems or (self._withEarlyStopping and self._maxIter <= 0):
             if valuesSum >= curBest:
                 return valuesSum, curVec
             return curBest, curBestVec
@@ -62,8 +67,7 @@ class LDS(Algorithm):
 
             if newSum1 >= curBest:
                 curBest, curBestVec = newSum1, temp1Vec
-            else:
-                curBest, curBestVec = curBest, curBestVec
+
             if self._problem.isOptimal(curBest):
                 return curBest, curBestVec
 
@@ -78,8 +82,6 @@ class LDS(Algorithm):
 
         if newSum2 >= curBest:
             curBest, curBestVec = newSum2, temp2Vec
-        else:
-            curBest, curBestVec = curBest, curBestVec
 
         return curBest, curBestVec
 
@@ -117,7 +119,7 @@ class LDS(Algorithm):
                 newEstimate += legalPart * self._problem.getValues()[bestItem]
                 legal = False
             else:
-                newEstimate += self._problem.getValues()[bestItem] * 2
+                newEstimate += self._problem.getValues()[bestItem] + newEstimate
             i -= 1
 
         return newEstimate + valuesSum

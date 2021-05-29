@@ -167,40 +167,24 @@ class CVRP(Problem):
 
         return res
 
-    # Best Route Better Adjustment recombination
-    def crossover(self, parent1Vec, parent2Vec):
+    def crossover(self, parent1, parent2):
+        size = len(parent1)
 
-        parent1Vec = self.getVecWithStops(parent1Vec)
+        newChildVec = np.copy(parent1)
 
-        parent1Routes = []
-        parent1routesDeltas = []
-
+        indexes = [i for i in range(size)]
         i = 0
-        while i < len(parent1Vec):
-            if 0 not in parent1Vec[i:]:
-                # last route
-                indexOfStop = len(parent1Vec)
-            else:
-                indexOfStop = parent1Vec.index(0, i)
 
-            route = parent1Vec[i:indexOfStop]
-            sumOfRoute = self._sumOfDemands(route)
-            delta = self._vehicleCapacity - sumOfRoute
-            parent1Routes.append(route)
-            parent1routesDeltas.append(delta)
+        # repeat the process random times
+        while len(indexes) > 1 and 1 / (i + 1) < random.random():
+            # get random index (without reps)
+            index = random.choice(indexes)
+            indexes.pop(index)
+            indexes.pop(np.where(parent1 == parent2[index])[0])
 
-            i = indexOfStop + 1
-
-        # sort the routes based on their deltas
-        sortedRoutes = [route for _, route in sorted(zip(parent1routesDeltas, parent1Routes))]
-
-        # move half the routes to new child
-        newChildVec = sum(sortedRoutes[:int(len(sortedRoutes) / 2)], [])
-
-        # complete the rest with parent2
-        for node in parent2Vec:
-            if node not in newChildVec:
-                newChildVec.append(node)
+            # switch the positions
+            newChildVec[index] = parent2[index]
+            newChildVec[np.where(parent1 == parent2[index])] = parent1[index]
 
         return newChildVec
 

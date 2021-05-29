@@ -36,7 +36,7 @@ class CVRP2PartsSolver(Algorithm):
             )
 
             lds = LDS(knapsackProblem)
-            sol = lds.findSolution(maxIter)
+            sol = lds.run(maxIter, withEarlyStopping=True)
             route = [unvisitedCities[i] for i in range(len(sol)) if sol[i] == 1]
             routes.append(route)
 
@@ -77,8 +77,5 @@ class CVRP2PartsSolver(Algorithm):
 
             for city in originalCities:
                 finalSol.append(city)
-
-        print(finalSol)
-        print(self._problem.calculateFitness(finalSol))
 
         return finalSol
