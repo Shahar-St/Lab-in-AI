@@ -28,7 +28,7 @@ class LDS(Algorithm):
         allowedMistakes = 0
         while allowedMistakes < maxAllowedMistakes:
             curSol, curVecSol = self.recursiveLds(0, allowedMistakes, valuesSum, weights.copy(), globalSol,
-                                                  zeroVec.copy(), globalVecSol.copy())
+                                                  zeroVec.copy(), globalVecSol.copy(), maxIter*2)
             if curSol > globalSol:
                 globalSol = curSol
                 globalVecSol = curVecSol
@@ -36,9 +36,9 @@ class LDS(Algorithm):
 
         return globalVecSol
 
-    def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec):
+    def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec, maxDepth):
 
-        if depth == self._numOfItems:
+        if depth == self._numOfItems or depth == maxDepth:
             if valuesSum >= curBest:
                 return valuesSum, curVec
             return curBest, curBestVec
@@ -55,7 +55,7 @@ class LDS(Algorithm):
         # go right
         if mistakes > 0:
             newSum1, temp1Vec = self.recursiveLds(depth + 1, mistakes - 1, valuesSum, weights.copy(), curBest,
-                                                  curVec.copy(), curBestVec.copy())
+                                                  curVec.copy(), curBestVec.copy(), maxDepth + 1)
 
             if newSum1 >= curBest:
                 curBest, curBestVec = newSum1, temp1Vec
@@ -71,7 +71,7 @@ class LDS(Algorithm):
 
         curVec[depth] = 1
         newSum2, temp2Vec = self.recursiveLds(depth + 1, mistakes, valuesSum + self._problem.getValues()[depth],
-                                              weights.copy(), curBest, curVec.copy(), curBestVec.copy())
+                                              weights.copy(), curBest, curVec.copy(), curBestVec.copy(), maxDepth + 1)
 
         if newSum2 >= curBest:
             curBest, curBestVec = newSum2, temp2Vec
