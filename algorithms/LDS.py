@@ -3,10 +3,13 @@ from algorithms.Algorithm import Algorithm
 
 class LDS(Algorithm):
 
-    def __init__(self, problem, capacityRelaxation=True):
+    # estimate functions:
+    # True = capacityRelaxation
+    # False = knapsackIntegrityRelaxation
+    def __init__(self, problem, estimateFunc=True):
         super().__init__(problem)
 
-        self._capacityRelaxation = capacityRelaxation
+        self._estimateFunc = estimateFunc
         self._numOfItems = self._problem.getNumOfItems()
 
     def findSolution(self, maxIter):
@@ -59,19 +62,21 @@ class LDS(Algorithm):
 
     def getInitialEstimate(self):
 
-        if self._capacityRelaxation:
+        if self._estimateFunc:
             return self._problem.getValues().sum()
 
         # calc second heuristic initialEstimate # todo
-        return 0
+        raise NotImplementedError
 
     def calcEstimates(self, estimate, d):
 
-        if self._capacityRelaxation:
-            return estimate, estimate - self._problem.getValues()[d]
+        if self._estimateFunc:
+            return self._capacityRelaxation(estimate, d)
 
-        # calc second heuristic estimate # todo
-        return 0, 0
+        return self._knapsackIntegrityRelaxation()
+
+    def _capacityRelaxation(self, estimate, d):
+        return estimate, estimate - self._problem.getValues()[d]
 
     def updateWeights(self, weights, d):
         matWeights = self._problem.getMatWeights()  # m*n
@@ -85,3 +90,6 @@ class LDS(Algorithm):
             if weight < 0:
                 return True
         return False
+
+    def _knapsackIntegrityRelaxation(self):
+        raise NotImplementedError
