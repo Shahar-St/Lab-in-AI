@@ -77,7 +77,13 @@ class MultiKnapsack(Problem):
         return self._knapsackWeightsPerItem
 
     def translateVec(self, vec):
-        return vec
+
+        sumVal = 0
+        for i, val in enumerate(vec):
+            if val:
+                sumVal += self._values[i]
+        return sumVal
+
 
     def getTargetSize(self):
         pass

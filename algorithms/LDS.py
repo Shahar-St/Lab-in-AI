@@ -34,7 +34,7 @@ class LDS(Algorithm):
                 globalVecSol = curVecSol
             allowedMistakes += 1
 
-        return globalSol, globalVecSol
+        return globalVecSol
 
     def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec):
 
