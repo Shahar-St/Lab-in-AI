@@ -9,11 +9,7 @@ BEST = 0
 X = 0
 Y = 1
 
-DEFAULT_TARGET = 'WEISH23.DAT'
-
-'''------------------GA-------------------'''
-GA_ELITE_RATE = 0.2  # elitism rate
-GA_MUTATION_RATE = 0.4  # mutation rate
+DEFAULT_TARGET = 'test.DAT'
 
 '''------------------DEFAULT_PARSER-------------------'''
 

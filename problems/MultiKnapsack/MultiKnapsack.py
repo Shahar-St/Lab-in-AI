@@ -59,6 +59,7 @@ class MultiKnapsack(Problem):
         self._numOfItems = numOfItems
         self._capacities = np.array(capacities)
         self._optimalVal = optimal
+        self._densities = np.array(self.getDensitiesSum())
 
     def isOptimal(self, results):
         return results == self._optimalVal
@@ -86,3 +87,17 @@ class MultiKnapsack(Problem):
 
     def calculateFitness(self, newVec):
         pass
+
+    def getDensitiesSum(self):
+
+        denSumArr = []
+        for i in range(self._numOfItems):
+            denSum = 0
+            for j in range(self._numOfKnapsacks):
+                denSum += (self._values[i] / self._knapsackWeightsPerItem[j][i])
+            denSumArr.append(denSum)
+
+        return denSumArr
+
+    def getDensities(self):
+        return self._densities
