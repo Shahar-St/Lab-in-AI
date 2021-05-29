@@ -9,14 +9,14 @@ BEST = 0
 X = 0
 Y = 1
 
-DEFAULT_TARGET = 'FLEI.DAT'
+DEFAULT_TARGET = '1'
 
 '''------------------DEFAULT_PARSER-------------------'''
 
-DEFAULT_ALGORITHM = 'LDS'
-DEFAULT_PROBLEM = 'MultiKnapsack'
+DEFAULT_ALGORITHM = 'NSGA2'
+DEFAULT_PROBLEM = 'CVRP'
 
 '''------------------ALLOWED_PARSER_NAMES-------------------'''
 
 ALLOWED_ALGO_NAMES = ('NSGA2', 'LDS')
-ALLOWED_PROBLEM_NAMES = ('CVRP', 'MultiKnapsack')
+ALLOWED_PROBLEM_NAMES = ('CVRP', 'MultiKnapsack', 'CVRP2PartsSolver')

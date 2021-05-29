@@ -25,11 +25,6 @@ class Algorithm(ABC):
                 popSize=popSize
             )
 
-        if algoName == 'LDS':
-            return algo(
-                problem=problem,
-            )
-
-        else:
-            raise Exception('Unknown algorithm')
-
+        return algo(
+            problem=problem,
+        )

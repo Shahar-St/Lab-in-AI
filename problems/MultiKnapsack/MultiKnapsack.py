@@ -8,7 +8,22 @@ from problems.Problem import Problem
 
 class MultiKnapsack(Problem):
 
-    def __init__(self, target):
+    def __init__(self, target, values=None, knapsackWeightsPerItem=None, numOfKnapsacks=None, numOfItems=None,
+                 capacities=None, optimal=None, initFromFile=True):
+        super().__init__(target)
+        self._values = values
+        self._knapsackWeightsPerItem = knapsackWeightsPerItem
+        self._numOfKnapsacks = numOfKnapsacks
+        self._numOfItems = numOfItems
+        self._capacities = capacities
+        self._optimalVal = optimal
+
+        if initFromFile:
+            self._initFromFile(target)
+
+        self._densities = np.array(self.getDensitiesSum())
+
+    def _initFromFile(self, target):
         super().__init__(target)
         # read and parse input file
         filePath = os.path.join(os.getcwd(), 'problems', 'MultiKnapsack', 'inputfiles', str(target))
@@ -39,6 +54,8 @@ class MultiKnapsack(Problem):
                              if capacity.isdigit()]
             capacities = capacities + newCapacities
 
+        capacities = np.array(capacities)
+
         numOfWeightsLines = numOfKnapsacks * numOfValuesLines
         lineNum += numOfCapacitiesLines
 
@@ -57,9 +74,12 @@ class MultiKnapsack(Problem):
         self._knapsackWeightsPerItem = knapsackWeightsPerItem
         self._numOfKnapsacks = numOfKnapsacks
         self._numOfItems = numOfItems
-        self._capacities = np.array(capacities)
+        self._capacities = capacities
         self._optimalVal = optimal
         self._densities = np.array(self.getDensitiesSum())
+
+    def getNumOfKnapsacks(self):
+        return self._numOfKnapsacks
 
     def isOptimal(self, results):
         return results == self._optimalVal
@@ -95,12 +115,14 @@ class MultiKnapsack(Problem):
         pass
 
     def getDensitiesSum(self):
-
         denSumArr = []
         for i in range(self._numOfItems):
             denSum = 0
             for j in range(self._numOfKnapsacks):
-                denSum += (self._values[i] / max(self._knapsackWeightsPerItem[j][i], 1))
+                if self._numOfKnapsacks > 1:
+                    denSum += (self._values[i] / max(self._knapsackWeightsPerItem[j][i], 1))
+                else:
+                    denSum += self._values[i] / max(self._knapsackWeightsPerItem[i], 1)
             denSumArr.append(denSum)
 
         return denSumArr

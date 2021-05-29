@@ -8,7 +8,7 @@ class LDS(Algorithm):
     # estimate functions:
     # True = capacityRelaxation
     # False = knapsackIntegrityRelaxation
-    def __init__(self, problem, estimateFunc=True):
+    def __init__(self, problem, estimateFunc=False):
         super().__init__(problem)
 
         self._estimateFunc = estimateFunc
@@ -80,21 +80,16 @@ class LDS(Algorithm):
 
         return curBest, curBestVec
 
-    def calcEstimates(self, estimate, d, valuesSum, weights):
-        if self._estimateFunc:
-            return self._capacityRelaxation(estimate, d)
-
-        rightEst = self._knapsackIntegrityRelaxation(d, valuesSum, weights)
-        leftEst = self._knapsackIntegrityRelaxation(d + 1, valuesSum + self._problem.getValues()[d], weights)
-        return leftEst, rightEst
-
     def _capacityRelaxation(self, estimate, d):
         return estimate, estimate - self._problem.getValues()[d]
 
     def updateWeights(self, weights, d):
         matWeights = self._problem.getMatWeights()  # m*n
         for j in range(len(weights)):
-            weights[j] -= matWeights[j][d]
+            if self._problem.getNumOfKnapsacks() > 1:
+                weights[j] -= matWeights[j][d]
+            else:
+                weights[j] -= matWeights[d]
 
         return weights
 
@@ -119,7 +114,7 @@ class LDS(Algorithm):
                 newEstimate += legalPart * self._problem.getValues()[bestItem]
                 legal = False
             else:
-                newEstimate += self._problem.getValues()[bestItem]
+                newEstimate += self._problem.getValues()[bestItem] * 2
             i -= 1
 
         return newEstimate + valuesSum
@@ -129,7 +124,10 @@ class LDS(Algorithm):
         maxLegalPart = 0
         for i in range(len(weights)):
             if weights[i] < 0:
-                legalPart = (-weights[i]) / matWeights[i][bestItem]
+                if self._problem.getNumOfKnapsacks() > 1:
+                    legalPart = (-weights[i]) / matWeights[i][bestItem]
+                else:
+                    legalPart = (-weights[i]) / matWeights[bestItem]
                 if legalPart > maxLegalPart:
                     maxLegalPart = legalPart
 

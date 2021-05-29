@@ -12,7 +12,18 @@ from util.Util import getValidIndexes
 # Define the problem and implements methods that algorithms can use
 class CVRP(Problem):
 
-    def __init__(self, target):
+    def __init__(self, target, optimalVal=None, dim=None, vehicleCapacity=None, nodesCoordinates=None,
+                 nodesDemands=None, initFromFile=True):
+        super().__init__(target)
+        self._optimalVal = optimalVal
+        self._dim = dim
+        self._vehicleCapacity = vehicleCapacity
+        self._nodesCoordinates = nodesCoordinates
+        self._nodesDemands = nodesDemands
+        if initFromFile:
+            self._initFromFile(target)
+
+    def _initFromFile(self, target):
         super().__init__(target)
         # read and parse input file
 
@@ -49,6 +60,15 @@ class CVRP(Problem):
 
         self._nodesCoordinates = np.array(nodesCoordinates)
         self._nodesDemands = np.array(nodesDemands)
+
+    def getCoords(self):
+        return self._nodesCoordinates.copy()
+
+    def getDemands(self):
+        return self._nodesDemands.copy()
+
+    def getVehicleCapacity(self):
+        return self._vehicleCapacity
 
     def generateRandomVec(self):
         # each solution is represented by a permutation [1, dim - 1]
