@@ -94,7 +94,7 @@ class MultiKnapsack(Problem):
         for i in range(self._numOfItems):
             denSum = 0
             for j in range(self._numOfKnapsacks):
-                denSum += (self._values[i] / self._knapsackWeightsPerItem[j][i])
+                denSum += (self._values[i] / max(self._knapsackWeightsPerItem[j][i], 1))
             denSumArr.append(denSum)
 
         return denSumArr

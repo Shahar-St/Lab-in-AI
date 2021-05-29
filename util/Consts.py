@@ -9,7 +9,7 @@ BEST = 0
 X = 0
 Y = 1
 
-DEFAULT_TARGET = 'test.DAT'
+DEFAULT_TARGET = 'WEISH24.DAT'
 
 '''------------------DEFAULT_PARSER-------------------'''
 
