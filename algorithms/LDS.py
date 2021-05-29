@@ -13,10 +13,12 @@ class LDS(Algorithm):
 
         self._estimateFunc = estimateFunc
         self._numOfItems = self._problem.getNumOfItems()
+        self._maxIter = 0
 
     def findSolution(self, maxIter):
         valuesSum = 0
         weights = self._problem.getWeights()
+        self._maxIter = maxIter
 
         globalSol = 0
 
@@ -28,7 +30,7 @@ class LDS(Algorithm):
         allowedMistakes = 0
         while allowedMistakes < maxAllowedMistakes:
             curSol, curVecSol = self.recursiveLds(0, allowedMistakes, valuesSum, weights.copy(), globalSol,
-                                                  zeroVec.copy(), globalVecSol.copy(), maxIter*2)
+                                                  zeroVec.copy(), globalVecSol.copy())
             if curSol > globalSol:
                 globalSol = curSol
                 globalVecSol = curVecSol
@@ -36,9 +38,10 @@ class LDS(Algorithm):
 
         return globalVecSol
 
-    def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec, maxDepth):
+    def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec):
 
-        if depth == self._numOfItems or depth == maxDepth:
+        self._maxIter -= 1
+        if depth == self._numOfItems or self._maxIter == 0:
             if valuesSum >= curBest:
                 return valuesSum, curVec
             return curBest, curBestVec
@@ -55,7 +58,7 @@ class LDS(Algorithm):
         # go right
         if mistakes > 0:
             newSum1, temp1Vec = self.recursiveLds(depth + 1, mistakes - 1, valuesSum, weights.copy(), curBest,
-                                                  curVec.copy(), curBestVec.copy(), maxDepth + 1)
+                                                  curVec.copy(), curBestVec.copy())
 
             if newSum1 >= curBest:
                 curBest, curBestVec = newSum1, temp1Vec
@@ -71,7 +74,7 @@ class LDS(Algorithm):
 
         curVec[depth] = 1
         newSum2, temp2Vec = self.recursiveLds(depth + 1, mistakes, valuesSum + self._problem.getValues()[depth],
-                                              weights.copy(), curBest, curVec.copy(), curBestVec.copy(), maxDepth + 1)
+                                              weights.copy(), curBest, curVec.copy(), curBestVec.copy())
 
         if newSum2 >= curBest:
             curBest, curBestVec = newSum2, temp2Vec
