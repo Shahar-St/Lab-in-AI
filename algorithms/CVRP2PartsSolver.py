@@ -76,6 +76,6 @@ class CVRP2PartsSolver(Algorithm):
             originalCities = np.array(route)[indices]
 
             for city in originalCities:
-                finalSol.append(city)
+                finalSol.append(city + 1)
 
         return finalSol
