@@ -32,7 +32,8 @@ def main():
     )
 
     # find a solution and print it
-    solVec = algo.findSolution(GA_MAX_ITER)
+    sol, solVec = algo.findSolution(GA_MAX_ITER)
+    print(sol)
     print(f'Solution = {problem.translateVec(solVec)}\n')
 
     # print summery of run

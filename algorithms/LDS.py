@@ -20,20 +20,28 @@ class LDS(Algorithm):
 
         globalSol = 0
 
+        globalVecSol = np.zeros(self._problem.getNumOfItems(), dtype=int)
+        zeroVec = np.zeros(self._problem.getNumOfItems(), dtype=int)
+
         # num of mistakes
         maxAllowedMistakes = min(maxIter, self._numOfItems)
         allowedMistakes = 0
         while allowedMistakes < maxAllowedMistakes:
-            curSol = self.recursiveLds(0, allowedMistakes, valuesSum, weights.copy(), globalSol)
+            curSol, curVecSol = self.recursiveLds(0, allowedMistakes, valuesSum, weights.copy(), globalSol,
+                                                  zeroVec.copy(), globalVecSol.copy())
             if curSol > globalSol:
                 globalSol = curSol
+                globalVecSol = curVecSol
             allowedMistakes += 1
 
-        return globalSol
+        return globalSol, globalVecSol
 
-    def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest):
+    def recursiveLds(self, depth, mistakes, valuesSum, weights, curBest, curVec, curBestVec):
+
         if depth == self._numOfItems:
-            return max(valuesSum, curBest)
+            if valuesSum >= curBest:
+                return valuesSum, curVec
+            return curBest, curBestVec
 
         # calc estimate according to heuristicOption
         if self._estimateFunc:
@@ -42,25 +50,35 @@ class LDS(Algorithm):
             est = self._knapsackIntegrityRelaxation(depth, valuesSum, weights.copy())
 
         if self._numOfItems - depth < mistakes or est < curBest:
-            return -1
+            return curBest, curBestVec
 
         # go right
         if mistakes > 0:
-            newSum1 = self.recursiveLds(depth + 1, mistakes - 1, valuesSum, weights.copy(), curBest)
-            curBest = max(newSum1, curBest)
+            newSum1, temp1Vec = self.recursiveLds(depth + 1, mistakes - 1, valuesSum, weights.copy(), curBest,
+                                                  curVec.copy(), curBestVec.copy())
+
+            if newSum1 >= curBest:
+                curBest, curBestVec = newSum1, temp1Vec
+            else:
+                curBest, curBestVec = curBest, curBestVec
             if self._problem.isOptimal(curBest):
-                return curBest
+                return curBest, curBestVec
 
         # go left
         weights = self.updateWeights(weights, depth)
         if self.isKnapsackWeightIllegal(weights):
-            return curBest
+            return curBest, curBestVec
 
-        newSum2 = self.recursiveLds(depth + 1, mistakes, valuesSum + self._problem.getValues()[depth],
-                                    weights.copy(), curBest)
-        curBest = max(newSum2, curBest)
+        curVec[depth] = 1
+        newSum2, temp2Vec = self.recursiveLds(depth + 1, mistakes, valuesSum + self._problem.getValues()[depth],
+                                              weights.copy(), curBest, curVec.copy(), curBestVec.copy())
 
-        return curBest
+        if newSum2 >= curBest:
+            curBest, curBestVec = newSum2, temp2Vec
+        else:
+            curBest, curBestVec = curBest, curBestVec
+
+        return curBest, curBestVec
 
     def calcEstimates(self, estimate, d, valuesSum, weights):
         if self._estimateFunc:
@@ -118,7 +136,7 @@ class LDS(Algorithm):
         return maxLegalPart
 
     def _getMaxValues(self, depth):
-        sumOfVals = 0
+        sumOfValues = 0
         for i in range(depth, self._problem.getNumOfItems()):
-            sumOfVals += self._problem.getValues()[i]
-        return sumOfVals
+            sumOfValues += self._problem.getValues()[i]
+        return sumOfValues
